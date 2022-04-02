@@ -1,0 +1,108 @@
+import React,{useState,useEffect} from "react";
+import {Form,Button,Row,Col} from "react-bootstrap";
+import {useDispatch,useSelector} from "react-redux";
+import{useLocation,useSearchParams,Link,useNavigate} from "react-router-dom";
+import { register } from "../Actions/userActions";
+import {FormContainer} from '../Components/FormContainer';
+import Loader from "../Components/loader";
+import Message from "../Components/Message";
+  const RegisterScreen=()=>{
+    const [name,setName]=useState('');
+   const [email,setEmail]=useState('');
+    const[password,setPassword]=useState('');
+    const[confirmPassword,setConfirmPassword]=useState('');
+   const[message,setMessage]=useState('');
+  const dispatch=useDispatch();
+  const userRegister=useSelector((state)=>state.userRegister);
+
+  const {loading,error,userInfo}=userRegister;
+   const navigate=useNavigate();
+   useEffect(()=>{
+   
+     if(userInfo)
+     {
+     navigate("/")
+     }
+     
+     
+   })  
+    const submitHandler=(e)=>{
+        e.preventDefault();
+        if(password!=confirmPassword)
+        {
+            setMessage('passwords do not match')
+        }
+        else{
+       dispatch(register(name,email,password))
+        }
+    }
+    
+    return( 
+        <>
+         <FormContainer>
+        <h1> Sign Up</h1>
+        {message &&<Message variant='danger'>{message}</Message>}
+        {
+          error&&<Message variant="danger" disabled>{error}</Message>
+        }
+        {loading&&<Loader />}
+        <Form onSubmit={submitHandler}>
+         <Form.Group controlId="name">
+        <Form.Label> Name</Form.Label>
+        <Form.Control 
+        type='name'
+         placeholder='Enter name'
+          value={name}
+        onChange={(e)=>setName(e.target.value)}
+        >
+        </Form.Control>
+
+         </Form.Group>
+         <Form.Group controlId="email">
+        <Form.Label>Email Address</Form.Label>
+        <Form.Control 
+        type='email'
+         placeholder='Enter email'
+          value={email}
+        onChange={(e)=>setEmail(e.target.value)}
+        >
+        </Form.Control>
+         </Form.Group>
+         <Form.Group controlId="password">
+        <Form.Label>Password</Form.Label>
+        <Form.Control 
+        type='password'
+         placeholder='Enter email'
+          value={password}
+        onChange={(e)=>setPassword(e.target.value)}
+        >
+        </Form.Control>
+         </Form.Group>
+         <Form.Group controlId="confirmPassword">
+        <Form.Label>Confirm Password</Form.Label>
+        <Form.Control 
+        type='password'
+         placeholder='Confirm Password'
+          value={confirmPassword}
+        onChange={(e)=>setConfirmPassword(e.target.value)}
+        >
+        </Form.Control>
+         </Form.Group>
+      <Button type='submit' varient='primary' className="my-4">
+       Register
+      </Button>
+        </Form>
+        Have an account?
+        <Row>
+          <Col>
+          <Link to="/login">Sign In</Link>
+          </Col>
+        </Row>
+        
+       </FormContainer>
+
+    </>
+    )
+
+}
+export  default RegisterScreen;
